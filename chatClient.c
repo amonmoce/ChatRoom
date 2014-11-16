@@ -1,4 +1,5 @@
-#include "chatClient.h"
+#include "connection.h"
+#include "chat.h"
 
 int main(int argc, char **argv){
 
@@ -11,5 +12,8 @@ int main(int argc, char **argv){
 
 	SetUpTCPConnection();
 
+	Chat(ConnectSocket);
+
+	close(ConnectSocket);
 	return 0;
 }

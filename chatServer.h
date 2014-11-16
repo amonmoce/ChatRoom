@@ -3,9 +3,35 @@
 
 #include "common.h"
 #include <netinet/in.h>
+#define MAX_ONLINE_USER 10
+#define MAX_NAME_SIZE 40
 
 int chat_app_port = DEFAULT_SERVER_PORT, ServerSocket, reuse_addr = 1;
 struct sockaddr_in local;
+typedef struct user{
+	int socket;
+	//int talkto;
+	char name[MAX_NAME_SIZE];
+	//int isWaitName;
+	//int isWaitTalker;
+	int isOnline;
+}ConnectedUser;
+
+/*** add user and return user id if succeed or return -1 if failed ***/
+int addUser(ConnectedUser* usersList, int socket){
+	int i;
+	for(i=0;i<MAX_ONLINE_USER;i++){
+		if(!usersList[i].isOnline){
+			usersList[i].socket = socket;
+			//usersList[i].talkto = -1;
+			//usersList[i].isWaitName = 0;
+			//usersList[i].isWaitTalker = 0;
+			usersList[i].isOnline = 1;
+			return i;
+		}
+	}
+	return -1;
+}
 
 void SetUpServerToListenTo(){
 	// Socket creation

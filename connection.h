@@ -1,8 +1,7 @@
-#ifndef 	CHATSERVER_H_
-#define 	CHATSERVER_H_
+#ifndef 	CONNECTION_H_
+#define 	CONNECTION_H_
 
 #include "common.h"
-#include <arpa/inet.h>
 #include <ctype.h>
 #include <netdb.h>
 #define MAX_SERVER_NAME_SIZE 20
