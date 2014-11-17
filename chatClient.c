@@ -15,5 +15,6 @@ int main(int argc, char **argv){
 	Chat(ConnectSocket);
 
 	close(ConnectSocket);
+	
 	return 0;
 }

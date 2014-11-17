@@ -27,6 +27,8 @@ void Chat(int socket){
         if(FD_ISSET(0, &rfds)){
           bzero(message, MESSAGE_MAX_SIZE + 1);
           fgets(message, MESSAGE_MAX_SIZE, stdin);
+          if(strcmp(message, "exit\n") == 0)
+            break;
           n = send(ConnectSocket, message, strlen(message)-1, 0);
           if(n<0){
             printf("ERROR: message was not sent to server\n");

@@ -17,12 +17,31 @@ typedef struct user{
 	int isOnline;
 }ConnectedUser;
 
-/*** add user and return user id if succeed or return -1 if failed ***/
+// handle commands received from the client
+void handlecmd(char received_message[MESSAGE_MAX_SIZE]){
+	char *cmd;
+	cmd = strtok(received_message, "\n");
+	cmd = strtok(cmd, " ");
+	if(strcmp(cmd, "who") == 0)
+		printf("list all\n");
+	else if(strcmp(cmd, "name") == 0)
+		printf("change name\n");
+	else if(strcmp(cmd, "tell") == 0)
+		printf("private message\n");
+	else if(strcmp(cmd, "yell") == 0)
+		printf("broadcast message\n");
+	else
+		printf("[Server] ERROR: Error command.\n");
+	memset(received_message, '\0' ,MESSAGE_MAX_SIZE);
+}
+
+// add user and return user id if succeed or return -1 if failed
 int addUser(ConnectedUser* usersList, int socket){
 	int i;
 	for(i=0;i<MAX_ONLINE_USER;i++){
 		if(!usersList[i].isOnline){
 			usersList[i].socket = socket;
+			strcpy(usersList[i].name, "anonymous");
 			//usersList[i].talkto = -1;
 			//usersList[i].isWaitName = 0;
 			//usersList[i].isWaitTalker = 0;
@@ -31,6 +50,25 @@ int addUser(ConnectedUser* usersList, int socket){
 		}
 	}
 	return -1;
+}
+// find user id and return it or return -1 if failed
+int findUser(ConnectedUser* usersList, int socket){
+	int i;
+	for(i=0;i<MAX_ONLINE_USER;i++){
+		if(usersList[i].socket==socket)
+			return i;
+	}
+	return -1;
+}
+
+//broadcast
+void broadcast(ConnectedUser* usersList, char broadcast_message[MESSAGE_MAX_SIZE]){
+	int i;
+	for(i=0;i<MAX_ONLINE_USER;i++){
+		if(usersList[i].isOnline){
+				send(usersList[i].socket, broadcast_message, strlen(broadcast_message), 0);
+		}
+	}
 }
 
 void SetUpServerToListenTo(){

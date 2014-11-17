@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv){
 	SetUpServerToListenTo();
-	int i, server_on = 0, NumOfConnectedUsers = 0;
+	int i, server_on = 0, NumOfConnectedUsers = 0, n;
 	int fdmax;					   // maximum fd number
 	int AcceptSocket; 		// client socket
 	int uid;						 // user id
@@ -43,6 +43,8 @@ int main(int argc, char **argv){
 					if ((AcceptSocket = accept( ServerSocket, (struct sockaddr *)&client, &addr_len )) == -1)
 						printf("ERROR: connection not accepted\n");
 					else{
+						// Broadcast a message
+						broadcast(usersList, "Someone is coming");
 						if((uid = addUser(usersList, AcceptSocket))!=-1){
 							sprintf(message_to_send,"%s%s%s%d",
 								"[Server] Hello anonymous from ",
@@ -58,12 +60,52 @@ int main(int argc, char **argv){
 						}
 					}
 				}
+				else{ //existing connection
+					bzero(message_received, MESSAGE_MAX_SIZE );
+					n = recv(i, message_received, MESSAGE_MAX_SIZE, 0);
+					// Cannot receive message from client
+					if (n <= 0) {
+						NumOfConnectedUsers--;
+						if(n==0){    //the user is offline
+							if((uid=findUser(usersList, i))!=-1){
+								bzero(message_to_send, MESSAGE_MAX_SIZE );
+								sprintf(message_to_send,"%s%s%s",
+									"[Server] ",
+									usersList[uid].name,
+									" is offline.");
+								// Erase the record
+								usersList[uid].isOnline = 0;
+								usersList[uid].socket = -1;
+								//usersList[uid].talkto = -1;
+								//usersList[i].isWaitName = 0;
+								//usersList[i].isWaitTalker = 0;
+								memset(usersList[uid].name, '\0' ,MAX_NAME_SIZE);
+								broadcast(usersList, message_to_send);
+							}
+						}
+						else{		  //fail in receiving
+							printf("ERROR: reception message from socket(%d) failed\n", i);
+						}
+						close(i);
+						FD_CLR(i, &master);
+					}
+					// Can receive message from client
+					else{
+						if((uid=findUser(usersList, i))!=-1){
+							//printf("%s\n", message_received);
+							handlecmd(message_received);
+						}
+
+
+					}
+				}
+
 			}
 		}
 
 	}while(!server_on);
 
-
+	close(ServerSocket);
 
 	return 0;
 }
