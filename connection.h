@@ -2,7 +2,6 @@
 #define 	CONNECTION_H_
 
 #include "common.h"
-#include <ctype.h>
 #include <netdb.h>
 #define MAX_SERVER_NAME_SIZE 20
 
