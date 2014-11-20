@@ -1,5 +1,8 @@
 #include "server_setup.h"
-#include "chatServer.h"
+#include "more_helpers.h"
+#include "broadcast.h"
+#include "finduser.h"
+#include "handlecmd.h"
 
 int main(int argc, char **argv){
 	SetUpServerToListenTo();
