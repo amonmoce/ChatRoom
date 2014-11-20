@@ -1,2 +1,3 @@
-chatClient
-chatServer
+.DS_Store
+client
+server

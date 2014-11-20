@@ -1,8 +1,8 @@
-#include "server_setup.h"
-#include "more_helpers.h"
-#include "broadcast.h"
-#include "finduser.h"
-#include "handlecmd.h"
+#include "lib/server/server_setup.h"
+#include "lib/server/more_helpers.h"
+#include "lib/server/broadcast.h"
+#include "lib/server/finduser.h"
+#include "lib/server/handlecmd.h"
 
 int main(int argc, char **argv){
 	SetUpServerToListenTo();
